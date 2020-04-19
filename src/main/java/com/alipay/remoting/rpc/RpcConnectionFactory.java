@@ -73,7 +73,7 @@ public class RpcConnectionFactory implements ConnectionFactory {
                                                                                "Rpc-netty-client-worker",
                                                                                true));
 
-    private static final Boolean                        useBind0       = Boolean
+    private static final boolean                        useBind0       = Boolean
                                                                            .parseBoolean(System
                                                                                .getProperty("bolt.client.use.bind.0"));
 
