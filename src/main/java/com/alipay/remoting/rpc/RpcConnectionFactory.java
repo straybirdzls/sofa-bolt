@@ -73,6 +73,10 @@ public class RpcConnectionFactory implements ConnectionFactory {
                                                                                "Rpc-netty-client-worker",
                                                                                true));
 
+    private static final Boolean                        useBind0       = Boolean
+                                                                           .parseBoolean(System
+                                                                               .getProperty("bolt.client.use.bind.0"));
+
     private Bootstrap                                   bootstrap;
 
     private ConcurrentHashMap<String, UserProcessor<?>> userProcessors = new ConcurrentHashMap<String, UserProcessor<?>>(
@@ -182,7 +186,13 @@ public class RpcConnectionFactory implements ConnectionFactory {
             logger.debug("connectTimeout of address [{}] is [{}].", addr, connectTimeout);
         }
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);
-        ChannelFuture future = bootstrap.connect(new InetSocketAddress(targetIP, targetPort));
+        ChannelFuture future;
+        if (useBind0) {
+            future = bootstrap.connect(new InetSocketAddress(targetIP, targetPort),
+                new InetSocketAddress(0));
+        } else {
+            future = bootstrap.connect(new InetSocketAddress(targetIP, targetPort));
+        }
 
         future.awaitUninterruptibly();
         if (!future.isDone()) {
